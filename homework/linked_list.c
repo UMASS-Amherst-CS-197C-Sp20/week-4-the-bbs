@@ -25,19 +25,40 @@ POINTER alloc(VALUE value) {
 // How do you count the items in a linked list?
 int list_size(POINTER start) {
   // TODO, does nothing right now.
-  return -1;
+  POINTER step = start;
+  int count = 0;
+  while(step != NULL){
+	count++;
+	step = step->next;  
+  }
+  return count;
 }
 
 // How do you add an item to the end of a linked list?
 void push_back(POINTER start, VALUE value) {
   // TODO, does nothing right now.
-  return;
+	  POINTER step = start;
+	  if(step!=NULL){
+  	while(step->next != NULL){
+        	step = step->next;
+  	}
+  
+  step->next = alloc(value);
+  }
+  else{
+	step = alloc(value);
+  }
 }
 
 bool list_equals_array(POINTER list, double* array, int array_len) {
   if (list_size(list) != array_len) return false;
   // TODO, do this better!
-  return false;
+  for(int i = 0;((i<array_len)&&(list!=NULL));i++){
+	if(list->value != *(array+i*sizeof(double)))
+		return false;
+	list = list->next;
+  }
+  return true;
 }
 
 // Given a value and a list, alloc a new entry and put it on the front of this list.
@@ -54,7 +75,35 @@ POINTER push_front(VALUE value, POINTER list) {
 // the list becomes: 1->2->4->5
 bool remove_value(POINTER start, VALUE value){
   //TODO
-  return false;
+  if(start==NULL)
+	return 0;
+  if(start->next==NULL){
+	if(start->value==(value)){
+		start = NULL;
+		return 1;
+	}
+	return 0;
+  }
+  if(start->next->next==NULL){
+	if(start->value==(value)){
+		start = start->next;
+		return 1;
+	if(start->next->value==(value)){
+		start->next = NULL;
+		return 1;
+	}
+	return 0;
+	}		
+
+  }
+  while(start->next->next != NULL){
+	if(start->next->value==(value)){
+		start->next = start->next->next;
+		return 1;
+	}		
+  	start=start->next;
+  }
+  return 0;
 }
 
 // Given the start of a list, reverse the list and return the start after the reverse
@@ -62,7 +111,20 @@ bool remove_value(POINTER start, VALUE value){
 // the list becomes: 5->4->3->2->1
 POINTER reverse_list(POINTER start){
   //TODO
-  return NULL;
+  if(start==NULL)
+	return NULL;
+  if(start->next == NULL)
+	return start;
+  POINTER prev = NULL;
+  POINTER current = start->next;
+  while(current != NULL){
+	start->next = prev;
+	prev = start;
+	start = current;
+	current = current->next;
+}
+  start->next = prev;
+  return start;
 }
 
 // Given a list, take its first element off and put it in the free list.
