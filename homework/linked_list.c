@@ -98,9 +98,8 @@ bool remove_value(POINTER start, VALUE value){
   }
 
   if(start->value==value){
-	printf("old head is %lf",start->value);
-	start=start->next;
-	printf("here at the correct place, new head is  %lf",start->value);
+	start->value=start->next->value;
+	start->next=start->next->next;
 	return true;
 	}
   while(start->next->next != NULL){
@@ -221,14 +220,10 @@ int main(int argc, char **argv) {
   remove_value(test_list, 7.0);
   assert(list_equals_array(test_list, expected_remove, 3));
 
-  printf("Test list: \t");
-  fprint_list(stdout,test_list);
-
+ 
 
   double expected_remove2[] = {8,1};
   remove_value(test_list, 9.0);
-  printf("Test list: \t");
-  fprint_list(stdout,test_list);
   assert(list_equals_array(test_list, expected_remove2, 2));
 
   //reverse the list, check correctness
