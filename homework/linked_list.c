@@ -37,24 +37,23 @@ int list_size(POINTER start) {
 // How do you add an item to the end of a linked list?
 void push_back(POINTER start, VALUE value) {
   // TODO, does nothing right now.
-	  POINTER step = start;
-	  if(step!=NULL){
+	POINTER step = start;
+	if(step!=NULL){
   	while(step->next != NULL){
         	step = step->next;
   	}
-  
-  step->next = alloc(value);
-  }
-  else{
-	step = alloc(value);
-  }
+  	step->next = alloc(value);
+  	}
+  	else{
+		step = alloc(value);
+ 	}	
 }
 
 bool list_equals_array(POINTER list, double* array, int array_len) {
   if (list_size(list) != array_len) return false;
   // TODO, do this better!
   for(int i = 0;((i<array_len)&&(list!=NULL));i++){
-	if(list->value != *(array+i*sizeof(double)))
+	if(list->value != *(array+i))
 		return false;
 	list = list->next;
   }
@@ -77,33 +76,42 @@ bool remove_value(POINTER start, VALUE value){
   //TODO
   if(start==NULL)
 	return 0;
+
   if(start->next==NULL){
 	if(start->value==(value)){
-		start = NULL;
-		return 1;
-	}
-	return 0;
+                start = NULL;
+                return true;
+        }
+	return false;
   }
+ 
   if(start->next->next==NULL){
-	if(start->value==(value)){
+	if(start->value==value){
 		start = start->next;
-		return 1;
+		return true;
+	}
 	if(start->next->value==(value)){
 		start->next = NULL;
-		return 1;
+		return true;
 	}
-	return 0;
-	}		
-
+	return false;
   }
+
+  if(start->value==value){
+	printf("old head is %lf",start->value);
+	start=start->next;
+	printf("here at the correct place, new head is  %lf",start->value);
+	return true;
+	}
   while(start->next->next != NULL){
 	if(start->next->value==(value)){
 		start->next = start->next->next;
-		return 1;
+		return true;
 	}		
   	start=start->next;
-  }
-  return 0;
+  	}
+
+  return false;
 }
 
 // Given the start of a list, reverse the list and return the start after the reverse
@@ -196,24 +204,31 @@ int main(int argc, char **argv) {
   printf("Test List:\t");
   fprint_list(stdout, test_list);
 
-  // Now test the functions we wrote:
+  // Nprintf("Test List:\t");
   assert(list_size(test_list) == 3);
 
   // Add an item, check that size increases:
   push_back(test_list, 1.0);
   assert(list_size(test_list) == 4);
-
+  
   // Now make sure the list is actually correct.
   double expected[] = {9,8,7,1};
   assert(list_equals_array(test_list, expected, 4));
+
 
   //remove an item, check correctness
   double expected_remove[] = {9,8,1};
   remove_value(test_list, 7.0);
   assert(list_equals_array(test_list, expected_remove, 3));
 
+  printf("Test list: \t");
+  fprint_list(stdout,test_list);
+
+
   double expected_remove2[] = {8,1};
   remove_value(test_list, 9.0);
+  printf("Test list: \t");
+  fprint_list(stdout,test_list);
   assert(list_equals_array(test_list, expected_remove2, 2));
 
   //reverse the list, check correctness
